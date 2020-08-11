@@ -37,8 +37,8 @@ cap mkdir "`workDir'/resources"
 local briefcase_version "v1.16.3"
 cap confirm file "`workDir'/ODK-Briefcase-`briefcase_version'.jar"
 if _rc != 0 copy "https://github.com/opendatakit/briefcase/releases/download/`briefcase_version'/ODK-Briefcase-`briefcase_version'.jar"                                           ///
-	"`workDir'/ODK-Briefcase-`briefcase_version'.jar"
-	
+    "`workDir'/ODK-Briefcase-`briefcase_version'.jar"
+
 // Read server credentials from a csv file
 // ---------------------------------------
 /* For safety purposes, your server credentials should never be stored as 
@@ -73,7 +73,7 @@ local pem = "`workDir'/resources/Private_Key.pem"
 // The current values are examples and n eed to be changed to match your project.
 local formId ODKform1_1 ///
              ODKform2_1 ///
-			 ODKform3_1
+             ODKform3_1
 
 // ---------------------------Download and Export-------------------------------
 // Check if the data was already downloaded today
@@ -81,26 +81,26 @@ local formId ODKform1_1 ///
 // last downloaded
 import delimited "./date_dl.csv", varnames(1) clear 
 if date != "`c(current_date)'" {
-	di "Downloading and exporting data from Aggregate…"
-	foreach form of local form_id {
-		shell java -jar `briefcase_path' -plla -id `form' -sd `storage_dir'"_"`form' ///
-			-url `url' -u `user' -p `passwd' -mhc 8 
-		di "Downloaded `form'"
-	}
+    di "Downloading and exporting data from Aggregate…"
+    foreach form of local form_id {
+        shell java -jar `briefcase_path' -plla -id `form' -sd `storage_dir'"_"`form' ///
+            -url `url' -u `user' -p `passwd' -mhc 8 
+        di "Downloaded `form'"
+    }
 
-	// Export the data to csv files
-	// ----------------------------
+    // Export the data to csv files
+    // ----------------------------
 
-	foreach form of local form_id {
-		shell java -jar `briefcase_path' -e -id `form' -sd `storage_dir'"_"`form' ///
-			-ed `export_dir' -f "`form'.csv" -pf `pem' -oc
-		di "Exported `form'"
-	}
-	di "Data downloaded and exported!"
+    foreach form of local form_id {
+        shell java -jar `briefcase_path' -e -id `form' -sd `storage_dir'"_"`form' ///
+            -ed `export_dir' -f "`form'.csv" -pf `pem' -oc
+        di "Exported `form'"
+    }
+    di "Data downloaded and exported!"
 
-	// Once the data has been downloaded, write the date to the file so it's not
-	// run again today
-	!printf "date,\n`c(current_date)'" > "./exports/date_dl_PTx.csv"
+    // Once the data has been downloaded, write the date to the file so it's not
+    // run again today
+    !printf "date,\n`c(current_date)'" > "./exports/date_dl_PTx.csv"
 }
 
 // All done, next step is going to be using odkmeta, in the next do-file.
