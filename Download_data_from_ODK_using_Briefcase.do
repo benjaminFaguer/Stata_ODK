@@ -30,7 +30,7 @@ clear
    Storing in a local macro means we only have to change it in one place
    and that it will always remain consistent (no typos).                      */
 
-local workDir "~/Documents/Stata_ODK"
+global workDir "~/Documents/Stata_ODK"
 
 /* 2. Set your private key
    -----------------------
@@ -40,7 +40,7 @@ local workDir "~/Documents/Stata_ODK"
    For safety purposes, any file ending in `.pem` will be ignored in 
    this repo.                                                                */
 
-local pem = "`workDir'/resources/Private_Key.pem"
+local pem = "$workDir/resources/Private_Key.pem"
 
 /* 3. Edit your form list
    ----------------------
@@ -48,11 +48,12 @@ local pem = "`workDir'/resources/Private_Key.pem"
    They can be found in the ODK form definitions, in the `settings` worksheet
    or on your ODK Aggregate instance, in the Form Management tab.
    The current values are examples and need to be changed to match your 
-   project.                                                                   */
+   project.                                                                   
+   It is stored in a global macro so it can be passed on to the next do-file. */
 
-local formId ODKform1_1 ///
-             ODKform2_1 ///
-             ODKform3_1
+global formId ODKform1_1 ///
+              ODKform2_1 ///
+              ODKform3_1
 
 /* 4. Write your ODK Aggregate credentials in a separate csv file
    --------------------------------------------------------------
@@ -74,17 +75,17 @@ local serverCred ./ODK_Aggregate_Credentials.csv
 
 // Set up the rest of the macros needed for the script
 // ---------------------------------------------------
-cd `workDir'
+cd $workDir
 // Create the needed subfolders if they don't exist already
-cap mkdir "`workDir'/csv"
-cap mkdir "`workDir'/resources"
+cap mkdir "$workDir/csv"
+cap mkdir "$workDir/resources"
 
 // We'll make sure you have ODK Briefcase downloaded to your computer, with a 
 // version that is known to work with this script.
 local briefcase_version "v1.16.3"
-cap confirm file "`workDir'/ODK-Briefcase-`briefcase_version'.jar"
+cap confirm file "$workDir/ODK-Briefcase-`briefcase_version'.jar"
 if _rc != 0 copy "https://github.com/opendatakit/briefcase/releases/download/`briefcase_version'/ODK-Briefcase-`briefcase_version'.jar"                                                         ///
-    "`workDir'/ODK-Briefcase-`briefcase_version'.jar"
+    "$workDir/ODK-Briefcase-`briefcase_version'.jar"
 
 // Import server credentials from the csv file
 import delimited "`serverCred'", bindquote(strict) varnames(1) encoding(utf8) 
@@ -93,9 +94,9 @@ local user = user in 1
 local password = password in 1
 
 // A few other local macros needed for the script
-local briefcase_path = "`workDir'/ODK-Briefcase-`briefcase_version'.jar"
-local storage_dir = "`workDir'/ODK"
-local export_dir = "`workDir'/csv"
+local briefcase_path = "$workDir/ODK-Briefcase-`briefcase_version'.jar"
+local storage_dir = "$workDir/ODK"
+local export_dir = "$workDir/csv"
 
 
 // II. Download and Export
@@ -118,7 +119,7 @@ if date != "`c(current_date)'" {
 	
 	// Download data from Aggregate
     // ----------------------------
-    foreach form of local form_id {
+    foreach form of global form_id {
         shell java -jar `briefcase_path' -plla -id `form' -sd `storage_dir'"_"`form' ///
             -url `url' -u `user' -p `passwd' -mhc 8 
         di "Downloaded `form'"
@@ -126,7 +127,7 @@ if date != "`c(current_date)'" {
 	
     // Export the data to csv files
     // ----------------------------
-    foreach form of local form_id {
+    foreach form of global form_id {
         shell java -jar `briefcase_path' -e -id `form' -sd `storage_dir'"_"`form' ///
             -ed `export_dir' -f "`form'.csv" -pf `pem' -oc
         di "Exported `form'"
