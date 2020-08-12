@@ -1,37 +1,19 @@
-## Welcome to GitHub Pages
+## Stata integration with ODK
 
-You can use the [editor on GitHub](https://github.com/benjaminFaguer/Stata_ODK/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+This repository is aimed at showing how we can use Stata to automate data management processes when collecting with [Open Data Kit](https://getodk.org/) (ODK).
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+The goal is to show code example that are easily modified to work with (almost) any project using ODK.
 
-### Markdown
+### What this repo contains
 
+This repository contains do-files and a few csv files used for project configuration. 
+The do-files are designed to perform the following tasks:
+
+* Downloading data automatically from an ODK Aggregate instance. :white_check_mark:
+* Label and shape the data from `csv` to `dta` using the Stata program `odkmeta`. :construction:
+* Merge all forms in a comprehensive dataset. :construction:
 Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
 
-```markdown
-Syntax highlighted code block
+### How to use
 
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/benjaminFaguer/Stata_ODK/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+You can either download/clone the repository and edit it to fit your needs locally, or fork it to keep track of your changes on Github.
