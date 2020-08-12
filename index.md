@@ -9,7 +9,7 @@ The goal is to show code example that are easily modified to work with (almost) 
 This repository contains do-files and a few csv files used for project configuration. 
 The do-files are designed to perform the following tasks:
 
-* Downloading data automatically from an ODK Aggregate instance. ✅ 
+* [Downloading data automatically from an ODK Aggregate instance](https://github.com/benjaminFaguer/Stata_ODK/blob/master/Download_data_from_ODK_using_Briefcase.do). ✅ 
 * Label and shape the data from `csv` to `dta` using the Stata program `odkmeta`. 🚧
 * Merge all forms in a comprehensive dataset. 🚧
 
