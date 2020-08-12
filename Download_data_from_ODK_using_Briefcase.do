@@ -23,9 +23,9 @@ clear
 // Preparation
 // ===========
 
-// Set your working directory here.
-// Storing in a local macro means we only have to change it in one place
-// and that it will always remain consistent (no typos).
+/* Set your working directory here.
+   Storing in a local macro means we only have to change it in one place
+   and that it will always remain consistent (no typos).                      */
 local workDir "~/Documents/Stata_ODK"
 cd `workDir'
 // Create the needed subfolders if they don't exist already
@@ -59,18 +59,20 @@ local password = password in 1
 local briefcase_path = "`workDir'/ODK-Briefcase-`briefcase_version'.jar"
 local storage_dir = "`workDir'/ODK"
 local export_dir = "`workDir'/csv"
-// The following macro is needed if you use encrypted ODK forms.
-// You need to set the filename to match your private key.
-// Make sure this file is not synced to any file sharing platform.
-// For safety purposes, any file ending in `.pem` will be ignored in this repo.
+/* The following macro is needed if you use encrypted ODK forms.
+   You need to set the filename to match your private key.
+   Make sure this file is not synced to any file sharing platform.
+   For safety purposes, any file ending in `.pem` will be ignored in 
+   this repo.                                                                 */
 local pem = "`workDir'/resources/Private_Key.pem"
 
 // Form list
 // ---------
-// Here is the list of form IDs to be processed by the script.
-// They can be found in the ODK form definitions, in the `settings` worksheet
-// or on your ODK Aggregate instance, in the Form Management tab.
-// The current values are examples and need to be changed to match your project.
+/* Here is the list of form IDs to be processed by the script.
+   They can be found in the ODK form definitions, in the `settings` worksheet
+   or on your ODK Aggregate instance, in the Form Management tab.
+   The current values are examples and need to be changed to match your 
+   project.                                                                   */
 local formId ODKform1_1 ///
              ODKform2_1 ///
              ODKform3_1
@@ -88,7 +90,7 @@ local formId ODKform1_1 ///
    storage directory. This is meant to circumvent an issue with Briefcase when 
    several forms have a different ID, but the same title.                     */
    
-import delimited "./date_dl.csv", varnames(1) clear 
+import delimited "./resources/date_dl.csv", varnames(1) clear 
 if date != "`c(current_date)'" {
     di "Downloading and exporting data from Aggregate…"
 	
@@ -112,7 +114,7 @@ if date != "`c(current_date)'" {
 
     // Once the data has been downloaded, write the date to the file so it's not
     // run again today.
-    !printf "date,\n`c(current_date)'" > "./exports/date_dl_PTx.csv"
+    !printf "date,\n`c(current_date)'" > "./resources/date_dl_PTx.csv"
 }
 
 // All done, next step is going to be using odkmeta, in the next do-file.
