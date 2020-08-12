@@ -45,7 +45,7 @@ if _rc != 0 copy "https://github.com/opendatakit/briefcase/releases/download/`br
    plain text in your do-files.
    It is better to store them in a csv file, placed in a local folder (i.e. not 
    shared on Github, Dropbox, Onedrive…)
-   If you use git,　remember to add it to your .gitignore.
+   If you use git, remember to add it to your .gitignore.
    For this example it is added to the repo, but remember not to do it in 
    production.
 */
@@ -70,36 +70,48 @@ local pem = "`workDir'/resources/Private_Key.pem"
 // Here is the list of form IDs to be processed by the script.
 // They can be found in the ODK form definitions, in the `settings` worksheet
 // or on your ODK Aggregate instance, in the Form Management tab.
-// The current values are examples and n eed to be changed to match your project.
+// The current values are examples and need to be changed to match your project.
 local formId ODKform1_1 ///
              ODKform2_1 ///
              ODKform3_1
 
 // ---------------------------Download and Export-------------------------------
-// Check if the data was already downloaded today
-// First, import the 'date.csv' file, which holds the date when the data was 
-// last downloaded
+/* Check if the data was already downloaded today
+   First, import the 'date.csv' file, which holds the date when the data was 
+   last downloaded.
+   If the date is the same, this step is skipped and we move on to the next 
+   do-file. This is meant to shorten the time it takes to run the whole script
+   if you have a lot of different forms, and you need to re-run your script 
+   without re-downloading everything.
+   
+   Another thing to notice is that every form ID will get it's own ODK_Briefcase
+   storage directory. This is meant to circumvent an issue with Briefcase when 
+   several forms have a different ID, but the same title.                     */
+   
 import delimited "./date_dl.csv", varnames(1) clear 
 if date != "`c(current_date)'" {
     di "Downloading and exporting data from Aggregate…"
+	
+	// Download data from Aggregate
+    // ----------------------------
     foreach form of local form_id {
         shell java -jar `briefcase_path' -plla -id `form' -sd `storage_dir'"_"`form' ///
             -url `url' -u `user' -p `passwd' -mhc 8 
         di "Downloaded `form'"
     }
-
+	
     // Export the data to csv files
     // ----------------------------
-
     foreach form of local form_id {
         shell java -jar `briefcase_path' -e -id `form' -sd `storage_dir'"_"`form' ///
             -ed `export_dir' -f "`form'.csv" -pf `pem' -oc
         di "Exported `form'"
     }
+	
     di "Data downloaded and exported!"
 
     // Once the data has been downloaded, write the date to the file so it's not
-    // run again today
+    // run again today.
     !printf "date,\n`c(current_date)'" > "./exports/date_dl_PTx.csv"
 }
 
