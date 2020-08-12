@@ -12,7 +12,7 @@ The do-files are designed to perform the following tasks:
 * Downloading data automatically from an ODK Aggregate instance. ✅ 
 * Label and shape the data from `csv` to `dta` using the Stata program `odkmeta`. 🚧
 * Merge all forms in a comprehensive dataset. 🚧
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+
 
 ### How to use
 
